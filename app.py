@@ -1,6 +1,7 @@
 """
     Discord Maple Story bot
     app.py
+    Author : Okrie
 """
 
 from dotenv import load_dotenv
