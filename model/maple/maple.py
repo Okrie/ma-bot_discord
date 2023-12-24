@@ -17,7 +17,7 @@ APIKEY = os.environ.get('APIKEY')
 APIADDRESS = os.environ.get('API_ADDRESS')
 API_HEADER = os.environ.get('API_HEADER')
 KST = timezone('Asia/Seoul')
-DEFAULT_TYPE = ''
+DEFAULT_TYPE = os.environ.get('DEFAULT_TYPE')
 
 # maple 캐릭터 ocid 받아오기
 def get_ocid(character_name):
