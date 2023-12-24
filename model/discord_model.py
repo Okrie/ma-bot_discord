@@ -53,7 +53,6 @@ class DiscordClient(discord.Client):
             return "알 수 없는 명령어"
         
         elif trim_text in answer_dict.keys():
-            logger.answerLog(self.user, answer_dict[trim_text], 'INFO')
             return answer_dict[trim_text]
         
         elif trim_text == '?명령어':
