@@ -51,9 +51,11 @@ def get_character_info(character_name):
             response = requests.get(f'{APIADDRESS}/character/stat?ocid={ocid}&date={nowdate}', headers={API_HEADER:APIKEY})
             res = json.loads(response.text)
             res = res['final_stat']
+            except_list = [9, 10, 11, 12, 13, 20, 21, 22, 23, 24, 25, 26, 27, 35, 38, 39, 43]
             result = result + f'\n\n```ansi\n{DEFAULT_TYPE}[1;34m스탯 정보\n\n{DEFAULT_TYPE}[0m'
-            for v in res:
-                result = result + f"{v['stat_name']} : {v['stat_value']}\n"
+            for i, v in enumerate(res):
+                if i not in except_list:
+                    result = result + f"{v['stat_name']} : {v['stat_value']}\n"
             result = result + f'\n\n```\n'
             result = result + f'> 기준 날짜 {nowdate}\n'
             return image, result

@@ -19,7 +19,8 @@ def get_day_of_week():
 
 # 현재 년-월-일
 def get_now_time():
-    return str(datetime.now(tz=KST) - timedelta(1))[:10]
+    timeis = (datetime.now(tz=KST) - timedelta(1)) if (datetime.now(tz=KST) - timedelta(1)).time().hour < 9 else (datetime.now(tz=KST) - timedelta(2))
+    return str(timeis)[:10]
 
 # 현재 시간
 def get_time():
