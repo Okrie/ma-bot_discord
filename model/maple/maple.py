@@ -37,22 +37,28 @@ def get_character_info(character_name):
     if response.status_code == 200:
         # 캐릭터 기본 정보
         res = json.loads(response.text)
-        image = str(res['character_image']).replace('"', '')
-        result = f'\n\n```ansi\n{DEFAULT_TYPE}[1;34m캐릭터 정보\n'
-        result = result + f"\n{DEFAULT_TYPE}[0m이름 : {res['character_name']} \n월드 : {res['world_name']} \n직업 : {res['character_class']} \n레벨 : {res['character_level']} \n경험치 : {res['character_exp_rate'][:-1]} % \n길드 : {res['character_guild_name']}"
-        
-        # 캐릭터 인기도 정보
-        response = requests.get(f'{APIADDRESS}/character/popularity?ocid={ocid}&date={nowdate}', headers={API_HEADER:APIKEY})
-        res = json.loads(response.text)
-        result = result + f"\n인기도 : {res['popularity']}```"
+        if res['character_class'] != 'null':
+            image = str(res['character_image']).replace('"', '')
+            result = f'\n\n```ansi\n{DEFAULT_TYPE}[1;34m캐릭터 정보\n'
+            result = result + f"\n{DEFAULT_TYPE}[0m이름 : {res['character_name']} \n월드 : {res['world_name']} \n직업 : {res['character_class']} \n레벨 : {res['character_level']} \n경험치 : {res['character_exp_rate'][:-1]} % \n길드 : {res['character_guild_name']}"
+            
+            # 캐릭터 인기도 정보
+            response = requests.get(f'{APIADDRESS}/character/popularity?ocid={ocid}&date={nowdate}', headers={API_HEADER:APIKEY})
+            res = json.loads(response.text)
+            result = result + f"\n인기도 : {res['popularity']}```"
 
-        # 캐릭터 스탯
-        response = requests.get(f'{APIADDRESS}/character/stat?ocid={ocid}&date={nowdate}', headers={API_HEADER:APIKEY})
-        res = json.loads(response.text)
-        res = res['final_stat']
-        result = result + f'\n\n```ansi\n{DEFAULT_TYPE}[1;34m스탯 정보\n\n{DEFAULT_TYPE}[0m'
-        for v in res:
-            result = result + f"{v['stat_name']} : {v['stat_value']}\n"
-        result = result + f'\n\n```\n'
-        result = result + f'> 기준 날짜 {nowdate}\n'
-        return image, result
+            # 캐릭터 스탯
+            response = requests.get(f'{APIADDRESS}/character/stat?ocid={ocid}&date={nowdate}', headers={API_HEADER:APIKEY})
+            res = json.loads(response.text)
+            res = res['final_stat']
+            result = result + f'\n\n```ansi\n{DEFAULT_TYPE}[1;34m스탯 정보\n\n{DEFAULT_TYPE}[0m'
+            for v in res:
+                result = result + f"{v['stat_name']} : {v['stat_value']}\n"
+            result = result + f'\n\n```\n'
+            result = result + f'> 기준 날짜 {nowdate}\n'
+            return image, result
+        else:
+            result = '\n\n```ansi\n{DEFAULT_TYPE}[1;34m캐릭터 정보\n'
+            result = result + '[0m생성 된지 얼마 안 된 캐릭터 입니다.'
+            result = result + '정보를 받을 수 없습니다.```'
+            return result
