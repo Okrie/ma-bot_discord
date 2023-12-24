@@ -8,15 +8,13 @@ import os
 import requests
 import json
 from dotenv import load_dotenv
-from datetime import datetime, timedelta
-from pytz import timezone
+from module.date.date import get_now_time
 
 load_dotenv()
 
 APIKEY = os.environ.get('APIKEY')
 APIADDRESS = os.environ.get('API_ADDRESS')
 API_HEADER = os.environ.get('API_HEADER')
-KST = timezone('Asia/Seoul')
 DEFAULT_TYPE = os.environ.get('DEFAULT_TYPE')
 
 # maple 캐릭터 ocid 받아오기
@@ -33,7 +31,7 @@ def get_ocid(character_name):
 # 캐릭터 정보 받아오기
 def get_character_info(character_name):
     ocid = get_ocid(character_name)
-    nowdate = str(datetime.now(tz=KST) - timedelta(1))[:10]
+    nowdate = get_now_time()
     response = requests.get(f'{APIADDRESS}/character/basic?ocid={ocid}&date={nowdate}', headers={API_HEADER:APIKEY})
 
     if response.status_code == 200:

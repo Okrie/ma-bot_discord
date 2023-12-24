@@ -4,14 +4,16 @@
 """
 
 import discord
-import aiohttp
 import io, os
 from .answer import answer_list
 from .maple.maple import get_character_info
+from config.log_w import LogClass
 from dotenv import load_dotenv
 
 load_dotenv()
 CHANNEL = os.environ.get('CHANNEL_ID')
+logger = LogClass()
+
 class DiscordClient(discord.Client):
 
     async def on_ready(self):
@@ -23,14 +25,20 @@ class DiscordClient(discord.Client):
             return
         
         if str(message.content).startswith('?'):
+            logger.writeLog(message, 'INFO')
             if message.content == '?ping':
                 await message.channel.send(f'pong {message.author.mention}')
-            
             else:
-                image, answer = self.get_answer(message)
-                if image != None:
-                    embed = discord.Embed().set_image(url=image)
-                await message.reply(answer, embed=embed)
+                if len(str(message.content)) > 2:
+                    try:
+                        image, answer = self.get_answer(message)
+                        embed = discord.Embed().set_image(url=image)
+                        logger.answerLog(self.user, message, answer, 'INFO')
+                        await message.reply(answer, embed=embed)
+                    except:
+                        answer = self.get_answer(message)
+                        logger.answerLog(self.user, message, answer, 'INFO')
+                        await message.reply(answer)
         else:
             return
 
@@ -41,9 +49,11 @@ class DiscordClient(discord.Client):
         answer_dict = answer_list.answer_fn()
 
         if trim_text == '' or None:
+            logger.writeLog(message, 'WARN')
             return "알 수 없는 명령어"
         
         elif trim_text in answer_dict.keys():
+            logger.answerLog(self.user, answer_dict[trim_text], 'INFO')
             return answer_dict[trim_text]
         
         elif trim_text == '?명령어':
@@ -53,6 +63,7 @@ class DiscordClient(discord.Client):
             character_name = text[7:]
             image, result = get_character_info(character_name)
             if result == None:
+                logger.writeLog(message, 'WARN')
                 return '캐릭터 이름을 정확히 입력하세요'
             return image, result
         
