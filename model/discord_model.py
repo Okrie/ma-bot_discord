@@ -6,7 +6,7 @@
 import discord
 import io, os
 from .answer import answer_list
-from .maple.maple import get_character_info
+from service.maple.maple import get_character_info, get_union_record
 from config.log_w import LogClass
 from dotenv import load_dotenv
 
@@ -66,6 +66,14 @@ class DiscordClient(discord.Client):
                 return '캐릭터 이름을 정확히 입력하세요'
             return image, result
         
+        elif text[:6] in '?유니온정보':
+            character_name = text[7:]
+            result = get_union_record(character_name)
+            if result == None:
+                logger.writeLog(message, 'WARN')
+                return '캐릭터 이름을 정확히 입력하세요'
+            return result
+
         else:
             for key in answer_dict.keys():
                 if key.find(trim_text) != -1:

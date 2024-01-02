@@ -64,3 +64,30 @@ def get_character_info(character_name):
             result = result + '[0m생성 된지 얼마 안 된 캐릭터 입니다.'
             result = result + '정보를 받을 수 없습니다.```'
             return result
+        
+    
+# 유저의 유니온 키운 기록 확인
+def get_union_record(character_name):
+    ocid = get_ocid(character_name)
+    nowdate = get_now_time()
+    response = requests.get(f'{APIADDRESS}/user/union-raider?ocid={ocid}&date={nowdate}', headers={API_HEADER:APIKEY})
+    if response.status_code == 200:
+        # 캐릭터 기본 정보
+        res = json.loads(response.text)
+        res_union = res['union_block']
+        result = f'\n\n```ansi\n{DEFAULT_TYPE}[1;34m유니온 정보\n'
+        temp = []
+        for v in res_union:
+            result = result + f"\n{DEFAULT_TYPE}[0m직업 : {v['block_class']} \n레벨 : {v['block_level']}\n"
+            temp.append(v['block_class'])
+        result = result + f'\n\n```\n'
+        result = result + f'> 기준 날짜 {nowdate}\n'
+        print('\n')
+        for v in temp:
+            print(v)
+        return result
+    else:
+        result = '\n\n```ansi\n{DEFAULT_TYPE}[1;34m유니온 정보\n'
+        result = result + '[0m생성 된지 얼마 안 됐거나 현재 정보를 불러 올 수 없는 정보 입니다.'
+        result = result + '정보를 받을 수 없습니다.```'
+        return result
