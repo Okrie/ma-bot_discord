@@ -30,7 +30,13 @@ def get_ocid(character_name):
 
 # 캐릭터 정보 받아오기
 def get_character_info(character_name):
-    ocid = get_ocid(character_name)
+    try:
+        ocid = get_ocid(character_name)
+    except Exception as e:
+        result = '\n\n```ansi\n{DEFAULT_TYPE}[1;34m캐릭터 정보\n'
+        result = result + '[0m생성 된지 얼마 안 된 캐릭터 입니다.'
+        result = result + '정보를 받을 수 없습니다.```'
+        return result
     nowdate = get_now_time()
     response = requests.get(f'{APIADDRESS}/character/basic?ocid={ocid}&date={nowdate}', headers={API_HEADER:APIKEY})
 
@@ -58,6 +64,7 @@ def get_character_info(character_name):
                     result = result + f"{v['stat_name']} : {v['stat_value']}\n"
             result = result + f'\n\n```\n'
             result = result + f'> 기준 날짜 {nowdate}\n'
+            result = result + f'환산 : https://maplescouter.com/info?name={character_name}'
             return image, result
         else:
             result = '\n\n```ansi\n{DEFAULT_TYPE}[1;34m캐릭터 정보\n'

@@ -60,11 +60,12 @@ class DiscordClient(discord.Client):
         
         elif text[:6] in '?캐릭터정보':
             character_name = text[7:]
-            image, result = get_character_info(character_name)
-            if result == None:
+            try:
+                image, result = get_character_info(character_name)
+                return image, result
+            except:
                 logger.writeLog(message, 'WARN')
                 return '캐릭터 이름을 정확히 입력하세요'
-            return image, result
         
         elif text[:6] in '?유니온정보':
             character_name = text[7:]
